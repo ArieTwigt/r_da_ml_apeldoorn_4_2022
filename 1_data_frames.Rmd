@@ -1,0 +1,454 @@
+---
+title: "Data Frames in R"
+author: "Arie Twigt"
+date: "4/7/2022"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+
+# Importing the Data Frame
+
+We will import the **German Data** data, that we will use for this project:
+
+```{r}
+# import data
+german_data_clean <- read.csv("data/german_data_clean.csv")
+```
+
+> This is imported with the standard `base` functions
+
+
+# Analyzing the Data Frame
+
+## Check the columns
+
+
+With the `names()` functions, we will get all the variables of the data frame.
+
+```{r}
+names(german_data_clean)
+```
+
+
+With the `$` operator, we can select a column in a Data Frame.
+
+```{r eval=FALSE}
+german_data_clean$credit_amount
+```
+
+
+Apply the `mean()` function for a column in the Data Frame:
+
+```{r}
+mean(german_data_clean$credit_amount)
+```
+
+
+Wrap a function over another function:
+
+```{r}
+round(mean(german_data_clean$credit_amount), 2)
+```
+
+
+Provide a statistical summary of a column with the `summary()` function:
+
+```{r}
+summary(german_data_clean$credit_amount)
+```
+
+
+Provide a summary over all columns in the Data Frame
+
+
+```{r}
+summary(german_data_clean)
+```
+
+
+Show the different values and occurances of a `character` column
+
+
+```{r}
+summary(factor(german_data_clean$purpose))
+```
+
+```{r}
+table(german_data_clean$purpose)
+```
+
+Show the unique values of a `character` column:
+
+```{r}
+unique(german_data_clean$purpose)
+
+```
+
+
+```{r}
+unique(german_data_clean$credit_amount)
+```
+
+
+With the `head()` function we can show the first 6 values of a vector
+
+```{r}
+head(german_data_clean$credit_amount, 10)
+```
+
+
+Show the last items with the `tail()` function
+
+```{r}
+tail(german_data_clean$credit_amount, 10)
+```
+
+
+With the `sort()` function, we can sort a vector:
+
+```{r}
+sort(german_data_clean$credit_amount)
+```
+
+With the `decreased=TRUE` parameter, we can sort on a *descending* order
+
+
+
+
+
+With the `head()` and `sort()` function combined, we can create a **top 10**
+
+```{r}
+head(sort(german_data_clean$credit_amount, decreasing=TRUE), 10)
+```
+
+Combined `head`, `sort` and `table` functions to create a top list with names and values
+
+
+```{r}
+head(sort(table(german_data_clean$purpose), decreasing=TRUE), 3)
+```
+
+### Exploring the dimensions of a Table:
+
+
+Show the number of rows in a Data Frame with the `nrow` function
+
+```{r}
+nrow(german_data_clean)
+```
+
+
+Show the number of columns in a Data Frame with the `ncol` function
+
+
+```{r}
+ncol(german_data_clean)
+```
+
+Show the *dimensions* of the Data Frame (both rows and columns) with the `dim` function
+
+```{r}
+dim(german_data_clean)
+```
+
+
+```{r}
+str(german_data_clean)
+```
+
+
+## Explorering the data frame with visualisations
+
+
+### Barplot
+
+```{r}
+barplot(c(1,2,3,4), names.arg = c("a", "b", "c", "d"))
+```
+
+
+
+```{r}
+barplot(table(german_data_clean$purpose))
+```
+Example named vectors:
+
+
+```{r}
+ages <- c(20, 30, 40)
+names(ages) <- c("arie", "jaap", "dirk")
+sum(ages )
+```
+
+
+Creating a sorted barplot
+
+
+```{r}
+barplot(
+  head(
+    sort(
+       table(german_data_clean$purpose), decreasing=TRUE)),
+  col = "blue",  main="Top 5 Purposes", xlab="Purpose", ylab = "#")
+```
+
+
+
+
+```{r}
+
+sort(table(german_data_clean$purpose), decreasing=TRUE)
+```
+
+
+### Boxplot
+
+
+```{r}
+standard_color <- "red"
+
+boxplot(german_data_clean$credit_amount, col=standard_color, outline = FALSE, notch = TRUE, main="Credit Amount")
+```
+
+
+
+### Pie chart
+
+
+
+```{r}
+pie(table(german_data_clean$purpose))
+```
+
+
+```{r}
+unique(german_data_clean$purpose)
+custom_colours <- c("darkred", "red", "darkblue", "blue", "darkgreen", "green", "yellow", "orange", "gray", "darkgray")
+
+
+
+```
+
+
+```{r}
+print(unique(german_data_clean$purpose))
+print("---")
+print(custom_colours)
+```
+
+
+```{r}
+pie(table(german_data_clean$purpose), col = custom_colours)
+```
+### Histogram
+
+
+```{r}
+hist(german_data_clean$duration_months)
+```
+
+
+```{r}
+hist(german_data_clean$duration_months, main = "Overview months", xlab = "Duration months", breaks = 5)
+```
+
+
+### Using a density plot in R
+
+
+```{r}
+plot(density(german_data_clean$credit_amount))
+```
+
+
+
+```{r}
+plot(german_data_clean$credit_amount)
+```
+
+
+## Slicing and Dicing in R
+
+
+### Selecting columnns in a Data Frame
+
+```{r}
+selected_column <- 'duration_months'
+
+german_data_clean[selected_column]
+
+```
+
+
+```{r}
+german_data_clean[1,]
+```
+
+Selecting the first 10 rows:
+
+```{r}
+german_data_clean[1:10,]
+```
+c()
+
+```{r}
+german_data_clean[1:10,1:3]
+```
+
+
+
+
+```{r}
+selected_rows <- c(1:10, 200:300)
+```
+
+```{r}
+german_data_clean[selected_rows,1:3]
+```
+
+
+```{r}
+selected_columns <- c("duration_months", "purpose", "credit_amount", "response")
+
+german_data_clean[selected_rows, selected_columns]
+```
+
+
+### Filtering of Data Frame
+
+
+
+A filter applied to a vector
+
+```{r}
+number_vector <- c(3, 5, 7, 1, 8, 2, 9, 0, 3, 6)
+number_vector > 5
+```
+
+
+```{r}
+number_vector[number_vector > 5]
+```
+
+```{r}
+months_filter <- german_data_clean$duration_months > 50
+
+german_data_clean[months_filter, ]
+
+```
+
+
+```{r}
+months_filter <- german_data_clean$duration_months > 50
+purpose_business <- german_data_clean$purpose == "business"
+
+
+german_data_clean[months_filter & purpose_business, ]
+
+# OR
+#german_data_clean[months_filter & purpose_business, ]
+
+```
+
+
+```{r}
+months_filter <- german_data_clean$duration_months > 50
+purpose_business <- german_data_clean$purpose %in% c("car (new)", "car (used)")
+
+
+german_data_clean[months_filter & purpose_business, ]
+```
+
+
+
+## Adding calculated columns in R
+
+
+
+```{r}
+german_data_clean$amount_per_month <- german_data_clean$credit_amount / german_data_clean$duration_months
+```
+
+
+Verifying the calculated colum
+
+```{r}
+View(german_data_clean[,c("duration_months", "credit_amount", "amount_per_month")])
+```
+
+
+Calculated column based on a condition
+
+
+```{r}
+german_data_clean$amount_category <- ifelse(german_data_clean$credit_amount > 10000, "Large", 
+                                            ifelse(german_data_clean$credit_amount > 5000, "Medium", "Low"))
+```
+
+
+```{r}
+german_data_clean$single_male_old <- ifelse(german_data_clean$personal_status_sex == "male   : single" &
+                                             german_data_clean$age_years > 68, "yes", "no")
+```
+
+
+Removing a column from a DataFrame
+
+
+```{r}
+german_data_clean$amount_per_month <- NULL
+```
+
+
+```{r}
+cor(german_data_clean$age_years, german_data_clean$credit_amount)
+```
+
+
+
+
+# Exporting data in R
+
+
+
+## Exporting a CSV file
+
+Create a filtered Data Frame
+
+
+```{r}
+months_filter <- german_data_clean$duration_months > 50
+purpose_business <- german_data_clean$purpose %in% c("car (new)", "car (used)")
+
+
+german_data_clean_filtered <- german_data_clean[months_filter & purpose_business, ]
+```
+
+
+```{r}
+write.table(german_data_clean_filtered, 
+          file="data/export/german_data_filtered.csv",
+          sep=";",
+          row.names = FALSE)
+```
+
+
+
+## Export an RDS
+
+
+```{r}
+saveRDS(german_data_clean_filtered, "data/export/german_data_clean_filtered.rds")
+```
+
+
+```{r}
+my_saved_rds <- readRDS("data/export/german_data_clean_filtered.rds")
+```
+
+
+
