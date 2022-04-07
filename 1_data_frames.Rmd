@@ -3,9 +3,9 @@ title: "Data Frames in R"
 author: "Arie Twigt"
 date: "4/7/2022"
 output:
-  word_document: default
-  pdf_document: default
   html_document: default
+  pdf_document: default
+  word_document: default
 ---
 
 
