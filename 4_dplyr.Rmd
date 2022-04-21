@@ -39,3 +39,88 @@ df_older_than_30_2 <- german_data_clean %>%
 ```
 
 
+Assignment
+
+
+```{r}
+filtered_purposes <- c("car (new)", "radio/television", "furniture/equipment")
+
+df_older_than_45 <- german_data_clean %>%
+  filter(age_years > 45) %>%
+  filter(personal_status_sex =="male   : married/widowed") %>%
+  filter(purpose %in% filtered_purposes) %>%
+  select(c(age_years, duration_months, credit_amount, purpose, response))
+```
+
+
+
+
+# Create subsets
+
+
+## 1. Add the `gender` columnt
+
+```{r}
+german_data_clean <- german_data_clean %>%
+  mutate(gender = ifelse(personal_status_sex == "female : divorced/separated/married", "female", "male"))
+```
+
+
+## 2. Create the two subsets
+
+```{r}
+df_men <- german_data_clean %>%
+  filter(gender == "male")
+
+df_women <- german_data_clean %>%
+  filter(gender == "female")
+```
+
+
+## 3. Aggregate both subsets
+
+
+```{r}
+df_men_aggregated <- df_men %>%
+  select(purpose, credit_amount) %>%
+  group_by(purpose) %>%
+  summarise(mean_credit_amount = mean(credit_amount)) %>%
+  arrange(desc(mean_credit_amount))
+```
+
+
+```{r}
+df_women_aggregated <- df_women %>%
+  select(purpose, credit_amount, age_years) %>%
+  group_by(purpose) %>%
+  summarise(mean_credit_amount = mean(credit_amount)) %>%
+  arrange(desc(mean_credit_amount))
+```
+
+
+## 4. Visualize
+
+```{r}
+men_amounts <- df_men_aggregated$mean_credit_amount
+names(men_amounts) <- df_men_aggregated$purpose
+
+barplot(men_amounts, col = "blue")
+```
+
+```{r}
+women_amounts        <-  df_women_aggregated$mean_credit_amount
+names(women_amounts) <- df_women_aggregated$purpose
+
+barplot(women_amounts, col = "pink")
+```
+
+
+# Extra
+
+
+```{r}
+
+test = german_data_clean %>%
+  mutate(gender_2 = ifelse(grepl("f", substr(personal_status_sex, 1, 1)), "female", "male"))
+
+```

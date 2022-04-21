@@ -1,0 +1,132 @@
+---
+title: "Statistical methods in R"
+author: "Arie Twigt"
+date: "4/21/2022"
+output: html_document
+---
+
+- Simpele methodes zoals, variantie, std, etc.
+- Correlaties
+- t.test
+- testen op normaal verdeelde data
+- ANOVA
+- Lineair model
+
+---
+Visualisaties
+
+# Import dataset
+
+```{r}
+library(readr)
+data <- read_csv("data/german_data_clean.csv")
+
+```
+
+
+
+# Simpele methodes
+
+
+```{r}
+mean(data$credit_amount)
+```
+
+```{r}
+var(data$credit_amount)
+```
+
+
+# Correlatie
+
+
+Met de correlatie, kunnen we de samenhang tussen twee variabelen weergeven
+
+```{r}
+cor(data$credit_amount, data$age_years)
+```
+
+
+```{r}
+cor(data)
+```
+
+Om de correlatie op te halen voor alle kolommen in de data frame, moeten alle kolommen in de data frame numeriek zijn
+
+
+```{r}
+
+
+selected_columns <- c("duration_months", "credit_amount", "installment_rate", 
+                      "present_residence", "age_years", "existing_credits", "people_liable_maintenance", "response")
+
+
+
+
+data_num <- data %>%
+  select(selected_columns)
+
+
+cor(data_num)
+```
+
+
+```{r}
+library(corrplot)
+
+corr_matrix <- cor(data_num)
+
+corrplot(corr_matrix)
+```
+
+### Hoe is de data verdeeld
+
+Visueel
+
+
+```{r}
+plot(density(data$age_years))
+```
+
+Met een test
+
+Shapiro test
+
+```{r}
+shapiro.test(data$age_years)
+```
+
+t-test
+
+```{r}
+t.test(data$age_years, data$duration_months)
+```
+
+Anova
+
+```{r}
+anova_duration_months <- aov(duration_months ~ age_years * installment_rate , data=data)
+summary(anova_duration_months)
+```
+
+# Linear model
+
+
+```{r}
+model_1 <- lm(credit_amount ~ duration_months + installment_rate, data = data)
+
+summary(model_1)
+```
+
+
+
+```{r}
+model_2 <- glm(response ~ duration_months, data=data)
+summary(model_2)
+```
+
+
+
+
+
+
