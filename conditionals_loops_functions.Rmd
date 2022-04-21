@@ -1,0 +1,148 @@
+---
+title: "Conditional statements, loops and functions"
+author: "Arie Twigt"
+date: "4/21/2022"
+output: html_document
+---
+
+- Functions
+- Loops
+- Conditional Statements
+
+
+```{r}
+myFun <- function(){
+  result <- 10 * 10
+  return(result)
+}
+```
+
+
+```{r}
+myFun()
+```
+
+Function with parameters
+
+```{r}
+myFunParams <- function(number){
+  result <- 10 * number
+  return(result)
+}
+```
+
+
+```{r}
+myFunParams(3)
+```
+
+
+Functie voor oppervlakte cirkel
+
+
+```{r}
+source("utils/calc_funs.r")
+calcCircle(diameter=50, rounding=3)
+```
+
+
+# 
+Stelling van Pythagoras
+
+C_2 = A_2 + B_2
+
+
+parameters: A, B
+output: C
+
+```{r}
+calcPythagoras <- function(A, B){
+  C_2 <- A**2 + B**2 
+  C  <- sqrt(C_2)
+  return(C)
+}
+```
+
+```{r}
+C_2
+
+```
+
+# Loops
+
+
+```{r}
+numeric_vector <- c(1,2,3,4,5)
+
+
+for(i in numeric_vector){
+  print(i * 10)
+}
+```
+
+```{r}
+diameters <- c(10, 15, 40, 50)
+
+# maak een lege vector
+oppervlaktes <- numeric(0)
+
+for(diameter in diameters){
+  
+  oppervlakte <- calcCircle(diameter)
+  oppervlaktes <- append(oppervlaktes, oppervlakte)
+  print(oppervlaktes)
+}
+```
+
+
+
+```{r}
+# load dataset
+data <- read_csv("data/german_data_clean.csv")
+```
+
+
+```{r}
+
+returnNumCols <- function(data, returnDataTypes=FALSE){
+  # initate empty vector with columns
+  numeric_cols <- character(0)
+           
+  # all columns in the data frame --> For the loop
+  columns <- colnames(data)
+           
+  # allowed data types
+  allowed_data_types <- c("numeric", "integer")
+           
+  for(column in columns){
+    current_data_type <- class(data[[column]])
+    
+    if(current_data_type %in% allowed_data_types){
+      numeric_cols <- append(numeric_cols, column)
+    } 
+    
+  }
+  if (returnDataTypes){
+    return_list <- list(numeric_cols=numeric_cols, 
+                        allowed_data_types=allowed_data_types)
+    return(return_list)
+  } else {
+    return(numeric_cols) 
+  }
+         
+}
+
+
+```
+
+```{r}
+
+result <- returnNumCols(german_data_clean, returnDataTypes = TRUE)
+result
+```
+
+
+
+
+
+
