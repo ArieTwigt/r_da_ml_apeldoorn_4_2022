@@ -6,3 +6,4 @@ my_num_cols <- returnNumCols(german_data_clean)
 
 data_num <- german_data_clean %>%
   select(my_num_cols)
+  
