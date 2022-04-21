@@ -1,0 +1,115 @@
+---
+title: "6. Data Visualisation ggplot"
+author: "Arie Twigt"
+date: "4/21/2022"
+output: html_document
+---
+
+```{r}
+library(readr)
+library(plotly)
+```
+
+```{r}
+data <- read_csv("data/german_data_clean.csv")
+```
+
+# Verschil normale plot in R vs ggplot
+
+Normal plot in R
+
+```{r}
+plot(data$age_years, data$credit_amount)
+```
+
+
+ggplot
+
+```{r}
+library(ggplot2)
+plot_1 <- ggplot(data, aes(x=age_years, y=duration_months))
+
+plot_1 + geom_point()
+```
+Histogram
+
+
+```{r}
+
+plot_2 <- ggplot(data, aes(x=credit_amount))
+plot_2 + geom_histogram(binwidth = 1000,
+                        color="gray", 
+                        fill="darkgreen")
+```
+
+Geef de verdeling van de `
+
+
+```{r}
+plot_3 <- ggplot(data, aes(credit_amount))
+
+plot_3 + geom_density(fill="gray", alpha=0.5) +
+  geom_vline(aes(xintercept=mean(credit_amount)), 
+             color="blue", 
+             size=3,
+             alpha=0.5) +
+  geom_vline(aes(xintercept=median(credit_amount)),
+             color="green", 
+             size=3, 
+             alpha=0.5) + 
+  geom_vline(aes(xintercept=mean(credit_amount) - (2* sd(credit_amount))),
+             color="red", 
+             size=1, 
+             alpha=0.5) +
+  geom_vline(aes(xintercept=mean(credit_amount) + (2* sd(credit_amount))),
+             color="red", 
+             size=1, 
+             alpha=0.5)
+
+```
+
+
+```{r}
+plot_4 <- ggplot(data, aes(x= personal_status_sex, y = credit_amount))
+plot_4 + geom_boxplot()
+```
+
+```{r}
+plot_5 <- ggplot(data, aes(purpose, credit_amount)) + geom_bar(aes(fill=personal_status_sex), position = "dodge" , stat="identity")
+
+ggplotly(plot_5)
+```
+
+```{r}
+theme_set(theme_minimal())
+data <- data %>%
+  mutate(gender = ifelse(personal_status_sex != "female : divorced/separated/married", 
+                         "male",
+                         "female"))
+
+
+plot_6 <- ggplot(data, aes(x=purpose, y=credit_amount)) +
+  geom_boxplot(aes(fill=gender), position = "dodge") +
+  theme(axis.text.x = element_text(angle=315, vjust = 0.5, hjust=0.4)) +
+  labs(title="Credit amount per gender", subtitle = "German data") +
+  xlab("Purpose") +
+  ylab("Credit amount")
+
+plot_6
+
+```
+
+```{r}
+library(plotly)
+
+ggplotly(plot_6)
+```
+
+
+```{r}
+plot_7 <- ggplot(data, aes(x=age_years, y=duration_months)) +
+  geom_point(aes(colour=purpose, size= credit_amount, shape=personal_status_sex), alpha=0.5)
+
+
+ggplotly(plot_7)
+```
