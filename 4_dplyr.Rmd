@@ -1,0 +1,41 @@
+---
+title: "Data Wrangling with dplyr"
+author: "Arie Twigt"
+date: "4/21/2022"
+output: html_document
+---
+
+
+```{r}
+library(dplyr)
+library(readr)
+```
+
+
+Import the data
+
+```{r}
+german_data_clean <- read_csv("data/german_data_clean.csv")
+```
+
+Standard way in R to filter, select and sort a data frame
+
+```{r}
+df_older_than_30 <- german_data_clean[german_data_clean$age_years > 30,]
+df_older_than_30 <- df_older_than_30[, c("age_years", "personal_status_sex", "credit_amount")]
+df_older_than_30 <- df_older_than_30[sort(df_older_than_30$age_years),]
+```
+
+
+
+
+The dplyr way to filter, select and sort a data frame
+
+```{r}
+df_older_than_30_2 <- german_data_clean %>%
+  filter(age_years > 30) %>%                                   # filter for ages
+  select(c(age_years, personal_status_sex, credit_amount)) %>% # select columns
+  arrange(desc(age_years))                                     # sort the data frame
+```
+
+

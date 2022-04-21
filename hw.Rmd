@@ -1,0 +1,74 @@
+Opdracht 1
+ 
+ 
+ 
+ 
+```{r}
+ 
+german_data_clean <- read.csv("data/german_data_clean.csv")
+
+barplot(head
+  (sort
+    (table(german_data_clean$job), decreasing = TRUE)
+    ), col = "darkgreen", 
+       main = "Aantal jobs", 
+       xlab="Jobs",  
+       ylab = "#", 
+       cex.names = 0.4)
+ 
+par(mar=c(5,4,4,4))
+ 
+barplot(head
+  (sort
+    (table(german_data_clean$job), decreasing = TRUE)
+    ), col = "darkgreen", main = "Aantal jobs", xlab="Jobs",  ylab = "#", las = 2, cex.names = 0.6)
+ 
+par(mar=c(4,10,4,4))
+ 
+barplot(head
+  (sort
+    (table(german_data_clean$job), decreasing = TRUE)
+    ), col = "darkgreen", main = "Aantal jobs", xlab="Jobs",  ylab = "#", horiz = T, las = 1, cex.names = 0.5)
+ 
+```
+ 
+ 
+Opdracht 2
+ 
+```{r}
+#table(german_data_clean$personal_status_sex)
+ 
+female_filter <- german_data_clean$personal_status_sex == "female : divorced/separated/married"
+age_filter <- german_data_clean$age_years < 40
+purpose_business <- german_data_clean$purpose == "business"
+ 
+
+selected_column <- c("personal_status_sex","duration_months","credit_amount","purpose")
+
+```
+
+
+```{r}
+german_data_clean[c(1,2, 50:60), c("personal_status_sex","duration_months","credit_amount","purpose")]
+
+```
+
+
+```{r}
+german_data_clean_female_40 <-german_data_clean[female_filter & age_filter & purpose_business, selected_column]
+ 
+
+german_data_clean_female_40 <- german_data_clean_female_40[selected_column]
+ 
+write.table(german_data_clean_female_40,
+          file="data/export/german_data_clean_female_40.csv",
+          sep=";",
+          row.names = FALSE
+          )
+ 
+```
+
+```{r}
+german_data_clean_female_40
+
+```
