@@ -1,0 +1,50 @@
+---
+title: "Linear Regression ML"
+author: "Arie Twigt"
+date: "5/23/2022"
+output: html_document
+---
+
+Import the right modules
+
+```{r}
+library(readr)
+library(caret)
+library(Metrics)
+```
+
+Import the dataset
+
+```{r}
+german_data_clean <- read_csv("data/german_data_clean.csv")
+```
+
+
+Split the data in a train- and test set
+
+
+```{r}
+set.seed(123)
+trainDataIndex <- createDataPartition(german_data_clean$credit_amount, p=0.7, list=FALSE)
+trainData <- german_data_clean[trainDataIndex,]
+testData <- german_data_clean[-trainDataIndex,]
+trainData
+```
+
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
