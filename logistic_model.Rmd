@@ -1,0 +1,77 @@
+---
+title: "Logistic Model"
+author: "Arie Twigt"
+date: "5/23/2022"
+output: html_document
+---
+
+Load required libraries
+
+```{r}
+library(caret)
+library(Metrics)
+library(readr)
+```
+
+
+
+Import the data
+
+
+```{r}
+german_data_clean <- read_csv("data/german_data_clean.csv")
+```
+
+```{r}
+set.seed(123)
+trainDataIndex <- createDataPartition(german_data_clean$response, p=0.7, list=FALSE)
+trainData <- german_data_clean[trainDataIndex,]
+testData <- german_data_clean[-trainDataIndex,]
+trainData
+```
+
+
+Train the binary model
+
+
+
+```{r}
+model_1 <- glm(response ~ duration_months + purpose, data=trainData, family = "binomial")
+```
+
+```{r}
+predictions <- predict(model_1, newdata=testData, type="response")
+pred_num <- ifelse(predictions > 0.5, 1, 0)
+
+print(head(predictions))
+print(head(pred_num))
+```
+
+
+Place the predictions next to the actual values
+
+```{r}
+testData$prediction <- pred_num
+```
+
+
+## Create the confusion matrix
+
+
+```{r}
+actuals  <- as.factor(testData$response)
+predictions <- as.factor(testData$prediction)
+
+
+confusionMatrix(predictions, actuals)
+```
+
+```{r}
+actuals <- testData$response
+predictions <- testData$prediction
+
+precision(actuals, predictions)
+```
+
+
+

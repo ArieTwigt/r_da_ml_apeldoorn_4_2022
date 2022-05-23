@@ -85,7 +85,23 @@ subTestData$error <- subTestData$credit_amount - subTestData$prediction
 ```
 
 
+Score the model based on the metrics
 
+```{r}
+mae(subTestData$credit_amount, subTestData$prediction)
+```
+
+```{r}
+mape(subTestData$credit_amount, subTestData$prediction)
+```
+
+```{r}
+mse(subTestData$credit_amount, subTestData$prediction)
+```
+
+```{r}
+rmse(subTestData$credit_amount, subTestData$prediction)
+```
 
 
 
