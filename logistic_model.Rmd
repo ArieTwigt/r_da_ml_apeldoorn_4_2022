@@ -66,12 +66,24 @@ predictions <- as.factor(testData$prediction)
 confusionMatrix(predictions, actuals)
 ```
 
+
+
 ```{r}
 actuals <- testData$response
 predictions <- testData$prediction
 
+
+accuracy(actuals, predictions)
+```
+
+```{r}
 precision(actuals, predictions)
 ```
 
 
+
+```{r}
+# sensitivity/recall
+recall(actuals, predictions)
+```
 
