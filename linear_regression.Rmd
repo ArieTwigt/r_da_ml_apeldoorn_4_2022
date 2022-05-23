@@ -1,0 +1,61 @@
+---
+title: "Linear Regression"
+author: "Arie Twigt"
+date: "5/23/2022"
+output: html_document
+---
+
+
+Import the dataset
+
+```{r}
+library(readr)
+german_data_clean <- read_csv("data/german_data_clean.csv")
+```
+
+Train the model
+
+```{r}
+model_1 <- lm(credit_amount ~ age_years + duration_months, data=german_data_clean)
+```
+
+Evaluate the model
+
+```{r}
+model_1
+```
+
+```{r}
+summary(model_1)
+```
+
+
+# Try a second model
+
+
+```{r}
+model_2 <- lm(credit_amount ~ purpose + duration_months + existing_credits, german_data_clean)
+summary(model_2)
+```
+
+```{r}
+model_1
+```
+
+```{r}
+new_data <- data.frame(age_years = c(45, 32, 55),
+                       duration_months = c(12, 16, 8))
+
+
+new_data
+```
+
+```{r}
+my_predictions <- predict(model_1, newdata = new_data)
+```
+
+```{r}
+new_data$prediction <- my_predictions
+new_data
+```
+
