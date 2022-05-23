@@ -11,6 +11,7 @@ Import the right modules
 library(readr)
 library(caret)
 library(Metrics)
+library(dplyr)
 ```
 
 Import the dataset
@@ -32,13 +33,56 @@ trainData
 ```
 
 
-```{r}
+Train the model
 
+
+```{r}
+model_1 <- lm(credit_amount ~ ., data=german_data_clean)
+```
+
+Provide a summary of the model
+
+```{r}
+summary(model_1)
+```
+
+Train an improved model
+
+
+```{r}
+model_2 <- lm(credit_amount ~ checking_account + installment_rate + job + telephone + purpose, data=german_data_clean)
+summary(model_2)
+```
+
+Compare with the test set
+
+
+```{r}
+selected_columns <- c("checking_account", "installment_rate", "job", "telephone", "purpose", "credit_amount")
+
+subTestData <-testData %>%
+  select(selected_columns)
 ```
 
 
+Apply the model to the `subTestData` data frame
+
+```{r}
+predictions <- predict(model_2, newdata = subTestData)
+```
 
 
+Add the predictions as a column to the test set
+
+
+```{r}
+subTestData$prediction <- predictions
+subTestData
+```
+
+```{r}
+subTestData$error <- subTestData$credit_amount - subTestData$prediction
+```
 
 
 
