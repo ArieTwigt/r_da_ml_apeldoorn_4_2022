@@ -1,0 +1,139 @@
+---
+title: "Random Forest"
+author: "Arie Twigt"
+date: "5/23/2022"
+output: html_document
+---
+
+```{r}
+library(randomForest)
+library(readr)
+library(dplyr)
+library(caret)
+library(Metrics)
+```
+
+
+```{r}
+german_data_clean <- read_csv("data/german_data_clean.csv")
+
+german_data_clean$response <- as.factor(german_data_clean$response)
+```
+```{r}
+table(german_data_clean$response)
+```
+
+```{r}
+german_data_sorted <- german_data_clean %>%
+  arrange(response)
+
+german_data_0 <- german_data_sorted[1:300,]
+german_data_1 <- german_data_sorted[701:1000,]
+```
+
+```{r}
+table(german_data_0$response)
+```
+
+```{r}
+table(german_data_1$response)
+```
+
+
+```{r}
+german_data_clean <- rbind.data.frame(german_data_0, german_data_1)
+```
+
+```{r}
+table(german_data_clean$response)
+```
+
+Split the train and test set
+
+```{r}
+set.seed(123)
+trainDataIndex <- createDataPartition(german_data_clean$response, p=0.7, list=FALSE)
+trainSet <- german_data_clean[trainDataIndex, ]
+testSet <- german_data_clean[-trainDataIndex, ]
+```
+
+
+Train the random forest model
+
+
+```{r}
+model_1 <- randomForest(response ~ ., 
+                        data=trainSet,
+                        ntree=500,
+                        importance=TRUE)
+
+```
+
+
+```{r}
+varImpPlot(model_1)
+```
+
+
+```{r}
+model_2 <- randomForest(response ~ checking_account + duration_months + credit_amount + credit_history + other_installment_plans + savings,
+                        ntree = 1500, 
+                        importance=TRUE, 
+                        data=german_data_clean)
+```
+
+
+```{r}
+varImpPlot(model_2)
+```
+
+
+```{r}
+plot(model_2)
+```
+
+
+Creating predictions
+
+
+```{r}
+predictions <- predict(model_2, newdata = testSet, type="prob")
+head(predictions)
+```
+
+```{r}
+predict_df <- as.data.frame(predictions)
+predict_df$actual <- testSet$response
+predict_df$predicted <- ifelse(predict_df$`1` > 0.5, 1, 0)
+predict_df
+```
+
+
+```{r}
+actuals_fct <- as.factor(predict_df$actual)
+predictions_fct <- as.factor(predict_df$predicted)
+
+
+confusionMatrix(actuals_fct, predictions_fct)
+```
+
+```{r}
+actuals <- predict_df$actual
+predictions <- predict_df$predicted
+
+
+accuracy(actuals, predictions)
+```
+
+```{r}
+precision(actuals, predictions)
+```
+
+
+
+```{r}
+# sensitivity/recall
+recall(actuals, predictions)
+```
+
+

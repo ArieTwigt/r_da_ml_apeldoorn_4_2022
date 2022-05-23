@@ -11,6 +11,8 @@ Load required libraries
 library(caret)
 library(Metrics)
 library(readr)
+library(pROC)
+library(PRROC)
 ```
 
 
@@ -85,5 +87,20 @@ precision(actuals, predictions)
 ```{r}
 # sensitivity/recall
 recall(actuals, predictions)
+```
+
+
+Visuals to assess the model
+
+
+```{r}
+predictions <- predict(model_1, newdata=testData, type="response")
+
+roc(testData$response ~ predictions, plot=TRUE, print.auc=TRUE)
+```
+
+```{r}
+pr <- pr.curve(testData$response, predictions, curve=TRUE)
+plot(pr)
 ```
 

@@ -1,0 +1,139 @@
+---
+title: "Boosting"
+author: "Arie Twigt"
+date: "5/23/2022"
+output: html_document
+---
+
+
+```{r}
+library(xgboost)
+library(caret)
+library(useful)
+```
+
+```{r}
+german_data_clean <- read_csv("data/german_data_clean.csv")
+```
+
+Split into a train and test set
+
+```{r}
+set.seed(123)
+train_index <- createDataPartition(german_data_clean$response, 
+                                      p=0.8, 
+                                      list=FALSE)
+
+trainSet <- german_data_clean[train_index, ]
+testSet <- german_data_clean[-train_index,]
+```
+
+Create the validation set
+
+```{r}
+valid_index <- createDataPartition(trainSet$response,
+                                   p=0.3,
+                                   list=FALSE)
+
+validSet <- trainSet[valid_index,]
+trainSet <- trainSet[-valid_index,]
+
+```
+
+
+```{r}
+target <- "response"
+features <- setdiff(names(trainSet), target)
+```
+
+
+```{r}
+paste0("Arie", "Twigt")
+```
+
+```{r}
+
+my_formula <- paste(target,   paste0(features, collapse= " + "), sep=" ~ ")
+my_formula
+```
+
+```{r}
+formula <- as.formula(my_formula)
+```
+
+
+Convert to xgboost format
+
+
+```{r}
+X_train <- build.x(formula, data=trainSet, contrasts=FALSE, sparse=TRUE)
+Y_train <- build.y(formula, data=trainSet) %>% as.integer()
+
+
+X_test <- build.x(formula, data=testSet, contrasts=FALSE, sparse=TRUE)
+Y_test <- build.y(formula, data=testSet) %>% as.integer()
+
+
+X_val <- build.x(formula, data=validSet, contrasts=FALSE, sparse=TRUE)
+Y_val <- build.y(formula, data=validSet) %>% as.integer()
+```
+
+
+```{r}
+xgTrain <- xgb.DMatrix(data=X_train, label=Y_train)
+xgTest <- xgb.DMatrix(data=X_test, label=Y_test)
+xgVal <- xgb.DMatrix(data=X_val, label=Y_val)
+
+```
+
+
+
+
+Train XGBoost
+
+
+```{r}
+model_1 <- xgb.train(
+  data=xgTrain,
+  objective="binary:logistic", 
+  nrounds=1000,
+  eval_metric="auc",
+  watchlist = list(train=xgTrain, validate=xgVal),
+  early_stopping_rounds = 100,
+  max_depth=3
+  
+)
+```
+
+```{r}
+model_1$best_score
+```
+
+```{r}
+xgb.plot.importance(
+  xgb.importance(model_1, feature_names = colnames(X_train))
+)
+```
+
+Scoren
+
+```{r}
+preds <- predict(model_1, xgTest)
+prediction <- as.numeric(preds > 0.5)
+prediction
+```
+
+
+```{r}
+pred_df <- data.frame(actual = as.factor(testSet$response),
+                      prediction = as.factor(prediction),
+                      predicton_prob = preds)
+
+pred_df
+```
+
+Confusion matrix
+
+```{r}
+confusionMatrix(pred_df$prediction, pred_df$actual)
+```
