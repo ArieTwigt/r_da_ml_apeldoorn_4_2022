@@ -1,0 +1,89 @@
+Opdracht 1
+ 
+Functie maken voor input van een dataset
+Met als output 2 subsets
+1 voor man en 1 voor vrouw
+ 
+```{r}
+library(dplyr)
+ 
+splitmale <- function(data){
+  df_male <- data %>%
+    filter (personal_status_sex != "female : divorced/separated/married")
+    return(df_male)
+}
+```
+ 
+```{r}
+library(dplyr)
+ 
+splitfemale <- function(data){
+  df_female <- data %>%
+    filter (personal_status_sex == "female : divorced/separated/married")
+    return(df_female)
+}
+```
+ 
+```{r}
+splitmale(german_data_clean)
+```
+ 
+
+Opdracht 1 vervolg
+```{r}
+splitdata <- function(data){
+  df_female <- data %>%
+    filter (personal_status_sex == "female : divorced/separated/married")
+ 
+  df_male <- data %>%
+    filter (personal_status_sex != "female : divorced/separated/married")
+   
+  returnedList <- list(df_female, df_male)
+  return(returnedList)
+ 
+}
+```
+
+
+```{r}
+result <- splitdata(german_data_clean)
+result[[2]]
+```
+
+Opdracht 2
+ 
+Grouped boxplot
+y-as credit amount
+per job
+per purpose een kleur
+ 
++ juiste labels
++ uitgelijnd
++ kies een style
+ 
+ 
+ 
+```{r fig.align="center", echo = FALSE, fig.width = 3}
+#theme_set(theme_classic())
+ 
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+ 
+data <- read_csv("data/german_data_clean.csv")
+ 
+#theme_set(theme_classic())
+theme_set(theme_minimal())
+ 
+ 
+plot6 <- ggplot(data, aes(x=purpose, y=credit_amount)) +
+geom_boxplot(aes(fill=job)) +
+  theme(axis.text.x = element_text(angle=45, vjust = 0.5)) +
+  labs(title = "Credit amount per job",
+       subtitle = "German data") +
+  xlab("Purpose") +
+  ylab("Credit amount")
+ 
+plot6
+```

@@ -1,0 +1,60 @@
+Opdracht 1
+
+
+```{r}
+library(dplyr)
+
+german_data_clean <- read.csv("data/german_data_clean.csv")
+
+
+```
+
+
+
+```{r}
+FunctionGenderMale <- function(data){
+  data <- data %>%
+     mutate(gender = ifelse(personal_status_sex == "female : divorced/separated/married", "female", "male"))
+  
+  df_men <- data %>%
+     filter(gender == "male")
+ 
+  df_women <- data %>%
+    filter(gender == "female")
+  
+  df_list <- list()
+  df_list$men <- df_men
+  df_list$women <- df_women
+  
+  return(df_list)
+ 
+}
+```
+ 
+ 
+Use the function
+
+```{r}
+result <- FunctionGenderMale(german_data_clean)
+```
+ 
+ 
+ 
+Opdracht 2
+```{r}
+library(ggplot2)
+
+data <- read_csv("data/german_data_clean.csv")
+PlotOpdracht2 <- ggplot(data, aes(x=job, y=credit_amount)) +
+  geom_boxplot(aes(fill=purpose), position = "dodge") +
+  theme(axis.text.x = element_text(angle=315, vjust = 0.8, hjust=0.4)) +
+  labs(title= "Credit amount per job") +
+  xlab("job") +
+  ylab("credit_amount")
+ 
+library(plotly)
+theme_set(theme_classic())
+ggplotly(PlotOpdracht2) 
+# PlotOpdracht2 # als je normaal wilt runnen
+ 
+```

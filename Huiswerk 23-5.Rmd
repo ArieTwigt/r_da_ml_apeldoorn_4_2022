@@ -1,0 +1,93 @@
+# Huiswerk 23-5
+
+```{r}
+
+library(readr)
+german_data_clean <- read_csv("data/german_data_clean.csv")
+
+#View(german_data_clean)
+
+
+ 
+  
+```    
+  
+  
+  
+```{r}  
+library(dplyr)
+
+mannenapart <- function (data, export=FALSE){
+  # create the gender column
+   data <- data %>%
+    mutate (gender = ifelse(personal_status_sex== 'female : divorced/separated/married', 'female', 'male')) 
+    
+  # create the subsets
+  df_men <- data %>%
+    filter (gender== 'male')
+  
+   df_women <- data %>%
+    filter (gender== 'female')
+  
+  # export the data frames
+  if(export == TRUE){
+    write.table(df_men, 
+            file="data/export/german_data_filtered_man.csv",
+            sep=";",
+            row.names = FALSE) 
+    
+    write.table(df_women, 
+            file="data/export/german_data_filtered_women.csv",
+            sep=";",
+            row.names = FALSE)
+  }
+  
+  result_list <- list()
+  result_list$men <- df_men
+  result_list$women <- df_women
+   
+  return(result_list)
+}
+```
+
+
+```{r}
+result <- mannenapart(german_data_clean, export=TRUE)
+```
+
+```{r}
+result$women
+```
+
+#Opdracht 2
+
+Grouped boxplot 
+y-as credit amount
+per job 
+per purpose een kleur
+
++ juiste labels
++ uitgelijnd
++ kies een style
+
+```{r}
+
+library(ggplot2)
+
+theme_set(theme_minimal())
+
+data <- read_csv("data/german_data_clean.csv")
+
+plot_Remmelt <- ggplot(data, aes(x=job, y=credit_amount, fill=purpose)) + 
+    geom_boxplot(aes(fill=purpose), Position = 'dodge') +
+  theme(axis.text.x = element_text(angle=315, vjust = 0.5, hjust=0.4)) +
+  labs(title="Credit amount per job",
+       xlab="job",
+       ylab="Credit amount")
+
+plot_Remmelt
+#ggplotly(plot_Remmelt) 
+  
+```
+  
+

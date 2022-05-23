@@ -1,0 +1,126 @@
+---
+title: "Huiswerk voor les 3"
+author: "Jorda ter Brugge"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+Import the data
+```{r}
+library(readr)
+german_data_clean <- read_csv("data/german_data_clean.csv")
+
+
+```
+
+Toevoegen van kolom
+
+```{r}
+MaleFemale <- unique(german_data_clean$personal_status_sex)
+MaleFemale
+
+german_data_clean <- german_data_clean %>%
+  mutate(gender = ifelse(personal_status_sex == 'female : divorced/separated/married', 'female', 'male'))
+
+
+```
+
+
+Twee Subsets maken
+```{r}
+dfMale <- german_data_clean %>%
+  filter(gender == 'male')
+
+dfFemale <- german_data_clean %>%
+  filter(gender == 'female')
+
+```
+
+
+Opdracht 1 
+parameters (dataset, subset) 
+
+```{r}
+funHuiswerk <- function(dataset, subset="both"){
+  library(readr)
+  datasetHW <- read_csv(dataset)
+  datasetHW <- datasetHW %>%
+    mutate(gender = ifelse(personal_status_sex == 'female : divorced/separated/married', 'female', 'male'))
+  
+  dfMale <- datasetHW %>%
+    filter(gender == "male")
+  
+  dfFemale <- datasetHW %>%
+    filter(gender == "female")
+  
+  if (subset=="male"){
+    return(dfMale) 
+  } else if(subset=="female") {
+    return(dfFemale)
+  } else {
+    result_list <- list()
+    result_list$men <- dfMale
+    result_list$women <- dfFemale
+    return(result_list)
+  }
+}
+
+
+
+
+```
+
+```{r}
+female <-funHuiswerk(dataset="data/german_data_clean.csv", subset="female")
+female
+```
+
+```{r}
+male <- funHuiswerk(dataset="data/german_data_clean.csv", subset="male") 
+male
+```
+
+```{r}
+both <- funHuiswerk(dataset="data/german_data_clean.csv") 
+both
+
+```
+
+Opdracht 2
+
+credit_amount
+job
+```{r}
+library(ggplot2)
+library(readr)
+
+theme_set(theme_dark())
+
+df_gender <- read_csv("data/german_data_clean.csv")
+
+df_gender <- df_gender %>%
+   mutate(gender = ifelse(personal_status_sex != "female : divorced/separated/married", 
+                          "male",
+                          "female"))
+
+
+
+
+
+Opdracht2 <- ggplot(df_gender, aes(x=job, y=credit_amount)) + 
+  geom_boxplot(aes(fill=purpose)) + 
+  theme(axis.text.x = element_text(angle = 45,hjust = 1, size = 8)) +
+  labs(title = "Credit amount per job", subtitle = "German data") +
+  xlab("Job") +
+  ylab("Credit amount")
+
+Opdracht2
+
+
+```
